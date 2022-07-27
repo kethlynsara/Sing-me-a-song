@@ -9,12 +9,20 @@ beforeEach(async () => {
     await prisma.$executeRaw`DELETE FROM recommendations`;
 });
 
-describe("recommendations tests", () => {
-    it("post a wrong recommendation, should fail", async () => {
+describe("post recommendations tests", () => {
+    it("post a wrong youtube link, should fail", async () => {
         const response = await supertest(app).post("/recommendations").send({name: "wrong music", youtubeLink: WRONG_LINK});
         expect(response.statusCode).toBe(422);
 
         const recommendation = await prisma.recommendation.findFirst({where: {name: "wrong music"}});
+        expect(recommendation).not.toBeNull;
+    })
+
+    it("post a right recommendation", async () => {
+        const response = await supertest(app).post("/recommendations").send({name: "right music", youtubeLink: RIGHT_LINK});
+        expect(response.statusCode).toBe(201);
+
+        const recommendation = await prisma.recommendation.findFirst({where: {name: "right music"}});
         expect(recommendation).not.toBeNull;
     })
 });
