@@ -1,3 +1,4 @@
+import { Recommendation } from "@prisma/client";
 import supertest from "supertest";
 import app from "../src/app.js";
 import { prisma } from "../src/database.js"
@@ -87,6 +88,66 @@ describe("update score tests", () => {
 
     it("send a invalid id, should fail", async () => {
         const response = await supertest(app).post(`/recommendations/${10}/downvote`);
+        expect(response.statusCode).toBe(404);
+    });
+});
+
+describe("get recommendations", () => {
+    it("get 10 recommendations", async () => {
+        const recommendationData1 = recommendationFactory.validRecommendationData();
+        const response1 = await supertest(app).post("/recommendations").send(recommendationData1);
+        const recommendationData2 = recommendationFactory.validRecommendationData();
+        const response2 = await supertest(app).post("/recommendations").send(recommendationData2);
+        const recommendationData3 = recommendationFactory.validRecommendationData();
+        const response3 = await supertest(app).post("/recommendations").send(recommendationData3);
+        const recommendationData4 = recommendationFactory.validRecommendationData();
+        const response4 = await supertest(app).post("/recommendations").send(recommendationData4);
+        const recommendationData5 = recommendationFactory.validRecommendationData();
+        const response5 = await supertest(app).post("/recommendations").send(recommendationData5);
+        const recommendationData6 = recommendationFactory.validRecommendationData();
+        const response6 = await supertest(app).post("/recommendations").send(recommendationData6);
+        const recommendationData7 = recommendationFactory.validRecommendationData();
+        const respons7 = await supertest(app).post("/recommendations").send(recommendationData7);
+        const recommendationData8 = recommendationFactory.validRecommendationData();
+        const response8 = await supertest(app).post("/recommendations").send(recommendationData8);
+        const recommendationData9 = recommendationFactory.validRecommendationData();
+        const response9 = await supertest(app).post("/recommendations").send(recommendationData9);
+        const recommendationData10 = recommendationFactory.validRecommendationData();
+        const response10 = await supertest(app).post("/recommendations").send(recommendationData10);
+        const recommendationData11 = recommendationFactory.validRecommendationData();
+        const response11 = await supertest(app).post("/recommendations").send(recommendationData11);
+
+
+        const recommendations = await supertest(app).get("/recommendations");
+        expect(recommendations.body.length).toEqual(10);
+
+        recommendations.body.forEach((recommendation: Recommendation) => {
+            expect(recommendation).not.toBe(null);
+            expect(recommendation.id).not.toBe(null);
+            expect(recommendation.name).not.toBe(null);
+            expect(recommendation.score).not.toBe(null);
+            expect(recommendation.youtubeLink).not.toBe(null);
+        });
+    });
+
+    it("get recommendation by id", async () => {
+        const recommendationData = recommendationFactory.validRecommendationData();
+        await supertest(app).post("/recommendations").send(recommendationData);
+        const recommendation = await recommendationFactory.findRecommendation(recommendationData.name);
+
+        const response = await supertest(app).get(`/recommendations/${recommendation.id}`);
+        expect(response.body).not.toBe(null);
+        expect(response.body.id).not.toBe(null);
+        expect(response.body.name).not.toBe(null);
+        expect(response.body.score).not.toBe(null);
+        expect(response.body.youtubeLink).not.toBe(null);
+    })
+
+    it("get recommendation with an invalid id", async () => {
+        const recommendationData = recommendationFactory.validRecommendationData();
+        await supertest(app).post("/recommendations").send(recommendationData);
+
+        const response = await supertest(app).get(`/recommendations/${758}`);
         expect(response.statusCode).toBe(404);
     });
 });
