@@ -152,6 +152,73 @@ describe("get recommendations", () => {
     });
 });
 
+describe("get top recommendations", () => {
+    it("get reccomendations with right amount parameter", async () => {
+        const amount = 6;
+        const recommendations = await recommendationFactory.insertMany(amount);
+        console.log(recommendations[0].name)
+        await prisma.recommendation.update({where: {name: recommendations[0].name}, 
+            data: {
+                score: {
+                    increment: 5
+                }
+            }});
+        await prisma.recommendation.update({where: {name: recommendations[1].name}, 
+            data: {
+                score: {
+                    increment: 2
+                    }
+            }});
+        await prisma.recommendation.update({where: {name: recommendations[2].name}, 
+            data: {
+                score: {
+                    increment: 7
+                    }
+            }});
+        await prisma.recommendation.update({where: {name: recommendations[3].name}, 
+            data: {
+                score: {
+                    increment: 4
+                }
+            }});
+        await prisma.recommendation.update({where: {name: recommendations[4].name}, 
+            data: {
+                score: {
+                    increment: 10
+            }
+        }});
+        await prisma.recommendation.update({where: {name: recommendations[5].name}, 
+            data: {
+                score: {
+                    increment: 3
+                }
+        }});
+
+        const topRecommendations = await supertest(app).get(`/recommendations/top/${amount}`);
+        expect(topRecommendations.body.length).toEqual(amount);
+        console.log(topRecommendations.body)
+    });
+
+    it("send string as amount parameter", async () => {
+        await recommendationFactory.insertMany(2);
+        const recommendation = await supertest(app).get(`/recommendations/top/wistle`)
+        console.log('body', recommendation.body)
+        expect(recommendation.statusCode).toBe(500);
+    });
+
+    it("send invalid amount parameter", async () => {
+        const recommendation = await supertest(app).get(`/recommendations/top/${1}`)
+        console.log('body', recommendation.body)
+        expect(recommendation.body.length).toBe(0);
+    });
+
+    it("send no amount parameter", async () => {
+        const recommendation = await supertest(app).get(`/recommendations/top/`)
+        console.log('body', recommendation.body)
+        expect(recommendation.statusCode).toBe(500);
+    });
+});
+
 afterAll(async () => {
     await prisma.$disconnect();
 });

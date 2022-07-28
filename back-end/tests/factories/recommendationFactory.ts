@@ -23,8 +23,19 @@ async function findRecommendation(name: string) {
     return await prisma.recommendation.findFirst({where: {name}});
 }
 
+async function insertMany(qtd: number) {
+    const data = [];
+    for (let i = 0; i < qtd; i++) {
+        data.push(validRecommendationData())
+    }
+
+    await prisma.recommendation.createMany({data});
+    return data;
+}
+
 export const recommendationFactory = {
     validRecommendationData,
     invalidRecommendationData,
-    findRecommendation
+    findRecommendation,
+    insertMany
 }
