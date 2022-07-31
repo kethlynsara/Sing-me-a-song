@@ -74,7 +74,7 @@ const recommendations = [
 beforeEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
-})
+});
 
 describe("recommendations test suit", () => {
     it("should create a recommendation", async () => {
