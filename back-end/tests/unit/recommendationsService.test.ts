@@ -13,19 +13,19 @@ const recommendations = [
         id: 1,
         name: faker.random.word(),
         youtubeLink: "https://www.youtube.com/watch?v=zDsE4BPuFRQ",
-        score: 1
+        score: 4
     },
     {
         id: 2,
         name: faker.random.word(),
         youtubeLink: "https://www.youtube.com/watch?v=zDsE4BPuFRQ",
-        score: 1
+        score: 3
     },
     {
         id: 3,
         name: faker.random.word(),
         youtubeLink: "https://www.youtube.com/watch?v=zDsE4BPuFRQ",
-        score: 1
+        score: 2
     },
     {
         id: 4,
@@ -182,4 +182,56 @@ describe("recommendations test suit", () => {
         const promise = await recommendationService.get();
         expect(promise.length).toEqual(0);
     });
+
+    it("should get one recommendation", async () => {
+        jest.spyOn(recommendationRepository, "find").mockImplementationOnce((): any => {return recommendations[3]});
+        
+        const promise = await recommendationService.getById(4);
+        expect(recommendationRepository.find).toHaveBeenCalledTimes(1);
+        expect(promise.name).not.toBe(null);
+        expect(promise.youtubeLink).not.toBe(null);
+        expect(promise.score).not.toBe(null);
+    });
+
+    it("should not get recommendation", async () => {
+        jest.spyOn(recommendationRepository, "find").mockImplementationOnce((): any => {});
+        
+        const promise = recommendationService.getById(4);
+
+        expect(promise).rejects.toEqual({message: "", type: "not_found"});
+    });
+
+    it("get random recommendation,", async () => {
+        jest.spyOn(recommendationRepository, "findAll").mockImplementationOnce((): any => {return recommendations});
+
+        const promise = await recommendationService.getRandom();     
+
+        expect(promise).not.toBe(null);
+    });
+
+    it("get random recommendation, should fail", async () => {
+        jest.spyOn(recommendationRepository, "findAll").mockImplementationOnce((): any => {return [{}]});
+
+        const promise = await recommendationService.getRandom();       
+
+        expect(promise.id).toBe(undefined);
+        expect(promise.name).toBe(undefined);
+        expect(promise.youtubeLink).toBe(undefined);
+        expect(promise.score).toBe(undefined);
+    });
+
+    it("get top recommendations", async () => {
+        const amount = 3;
+        jest.spyOn(recommendationRepository, "getAmountByScore").mockImplementationOnce((): any => {
+            return [
+                recommendations[0],
+                recommendations[1],
+                recommendations[2]
+            ]
+        });
+
+        const promise = await recommendationService.getTop(amount);       
+        expect(promise).not.toBe(null);
+        expect(promise.length).toEqual(amount);
+    });    
 });
