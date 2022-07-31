@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { Recommendation } from "@prisma/client";
-import { prisma } from "../../src/database.js";
+import { prisma } from "../../../src/database.js"
 
 export type RecommendationData = Omit<Recommendation, "id" | "score">;
 
