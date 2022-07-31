@@ -219,14 +219,6 @@ describe("get top recommendations", () => {
     });
 });
 
-describe("get random recommendation", () => {
-    it("should get one recommendation",async () => {
-        await recommendationFactory.insertMany(2);
-        const recommendation = await supertest(app).get("/recommendations/random");
-        expect(recommendation).not.toBe(null);
-    })
-})
-
 afterAll(async () => {
     await prisma.$disconnect();
 });
