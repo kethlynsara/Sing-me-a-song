@@ -207,6 +207,10 @@ describe("recommendations test suit", () => {
         const promise = await recommendationService.getRandom();     
 
         expect(promise).not.toBe(null);
+        expect(promise.id).not.toBe(undefined);
+        expect(promise.name).not.toBe(undefined);
+        expect(promise.youtubeLink).not.toBe(undefined);
+        expect(promise.score).not.toBe(undefined);
     });
 
     it("get random recommendation, should fail", async () => {
