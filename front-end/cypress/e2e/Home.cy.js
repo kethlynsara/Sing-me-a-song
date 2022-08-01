@@ -82,9 +82,9 @@ describe("upvote and downvote tests", () => {
     cy.visit("http://localhost:3000/");
     cy.createRecommendation(recommendation);
 
-    cy.get("div:last-child article:last-child svg:first-child",).click();
-    cy.get("div:last-child article:last-child svg:first-child",).click();
-    cy.get("div:last-child article:last-child svg:first-child",).click();
+    cy.get("div:last-child article:last-child svg:first-child").click();
+    cy.get("div:last-child article:last-child svg:first-child").click();
+    cy.get("div:last-child article:last-child svg:first-child").click();
   });
 
   it("downvote test", () => {
@@ -96,7 +96,7 @@ describe("upvote and downvote tests", () => {
     cy.visit("http://localhost:3000/");
     cy.createRecommendation(recommendation);
 
-    cy.get("div:last-child article:last-child svg:last-child",).click();
-    cy.get("div:last-child article:last-child svg:last-child",).click();
+    cy.get("div:last-child article:last-child svg:last-child").click();
+    cy.get("div:last-child article:last-child svg:last-child").click();
   });
 });
