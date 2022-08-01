@@ -82,6 +82,9 @@ describe("upvote and downvote tests", () => {
     cy.visit("http://localhost:3000/");
     cy.createRecommendation(recommendation);
 
+    cy.intercept("POST", "/recommendations/1/upvote").as(
+      "upvote"
+    );
     cy.get("div:last-child article:last-child svg:first-child").click();
     cy.get("div:last-child article:last-child svg:first-child").click();
     cy.get("div:last-child article:last-child svg:first-child").click();
